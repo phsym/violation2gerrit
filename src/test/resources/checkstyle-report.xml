@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<checkstyle version='4.3'>
+<file name='tools&#92;build.sh' >
+<error line='30' column='1' severity='warning' message='Use &#45;print0/&#45;0 or &#45;exec &#43; to allow for non&#45;alphanumeric filenames.' source='ShellCheck.SC2038' />
+<error line='49' column='62' severity='info' message='Double quote to prevent globbing and word splitting.' source='ShellCheck.SC2086' />
+<error line='65' column='45' severity='info' message='Double quote to prevent globbing and word splitting.' source='ShellCheck.SC2086' />
+</file>
+</checkstyle>

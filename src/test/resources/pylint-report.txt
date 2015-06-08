@@ -1,0 +1,195 @@
+************* Module lib.mcas.siteinfo
+lib/mcas/siteinfo.py:222: [R0912(too-many-branches), SiteinfoGenerator.generate] Too many branches (23/12)
+lib/mcas/siteinfo.py:222: [R0915(too-many-statements), SiteinfoGenerator.generate] Too many statements (76/50)
+************* Module lib.providers.infra_builder
+lib/providers/infra_builder.py:69: [W0511(fixme), ] TODO : Remove vmlist
+lib/providers/infra_builder.py:318: [W0511(fixme), ] TODO : Check mcas image, keypairs, and resource availability
+************* Module tests.openstack
+tests/openstack.py:16: [R0904(too-many-public-methods), OpenstackTest] Too many public methods (102/100)
+************* Module tests.ssh
+tests/ssh.py:1: [R0801(duplicate-code), ] Similar lines in 2 files
+==tests.utils.OsApiStub:162
+==tests.utils.osdata:175
+                "allowed_address_pairs": [],
+                "admin_state_up": True,
+                "network_id": "1",
+                "tenant_id": "",
+                "extra_dhcp_opts": [],
+                "binding:vif_details": {
+                    "port_filter": True,
+                    "ovs_hybrid_plug": True
+tests/ssh.py:1: [R0801(duplicate-code), ] Similar lines in 2 files
+==tests.utils.OsApiStub:165
+==tests.utils.osdata:206
+                        "tenant_id": "",
+                        "extra_dhcp_opts": [],
+                        "binding:vif_details": {
+                            "port_filter": True,
+                            "ovs_hybrid_plug": True
+tests/ssh.py:1: [R0801(duplicate-code), ] Similar lines in 2 files
+==tests.utils.OsApiStub:142
+==tests.utils.osdata:53
+                "status": "ACTIVE",
+                "accessIPv4": "",
+                "accessIPv6": ""
+            }
+        }
+
+
+Report
+======
+4705 statements analysed.
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |0      |0        |=          |
++-----------+-------+---------+-----------+
+|refactor   |6      |6        |=          |
++-----------+-------+---------+-----------+
+|warning    |2      |2        |=          |
++-----------+-------+---------+-----------+
+|error      |0      |1        |-1.00      |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++----------------------------+------+--------+---------+-----------+
+|module                      |error |warning |refactor |convention |
++============================+======+========+=========+===========+
+|lib.providers.infra_builder |0.00  |100.00  |0.00     |0.00       |
++----------------------------+------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++------------------------+------------+
+|message id              |occurrences |
++========================+============+
+|duplicate-code          |3           |
++------------------------+------------+
+|fixme                   |2           |
++------------------------+------------+
+|too-many-statements     |1           |
++------------------------+------------+
+|too-many-public-methods |1           |
++------------------------+------------+
+|too-many-branches       |1           |
++------------------------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 9.98/10 (previous run: 9.97/10, +0.01)
+
+External dependencies
+---------------------
+::
+
+    argparse (tests.commands,lib.main)
+    lib (lib.virt.clients.openstack.network,lib.configuration.config,lib.virt.clients.openstack.client,lib.providers.infra_builder,lib.providers.ip_provider)
+      \-commands (v8650_setup,tests.commands,tests.main,lib.commands.v8650.auto,lib.main)
+      | \-base (tests.commands,tests.main,lib.commands.v8650.info,lib.commands.v8650.installspa,lib.commands.v8650.cleanup,lib.commands.v8650.prepare,lib.commands.v8650.createvm,lib.commands.v8650.auto,lib.commands.v8650.env,lib.commands.v8650.boot,lib.commands.v8650.install,lib.commands.v8650.config,lib.commands.v8650.finalize)
+      | \-v8650 
+      |   \-auto (v8650_setup)
+      |   \-boot (v8650_setup)
+      |   \-cleanup (v8650_setup)
+      |   \-config (v8650_setup)
+      |   \-createvm (v8650_setup)
+      |   \-env (v8650_setup)
+      |   \-finalize (v8650_setup)
+      |   \-info (v8650_setup)
+      |   \-install (v8650_setup)
+      |   \-installspa (v8650_setup)
+      |   \-prepare (v8650_setup)
+      \-common (lib.ssh,lib.virt.clients.openstack.client,lib.providers.infra_builder,lib.virt.clients.vmmhi.client,lib.commands,lib.configuration,lib.mcas.utils,tests.common,lib.mcas.siteinfo,lib.commands.v8650.config,lib.providers.mcas_configurator,tests.scenario,lib.mcas.lb,lib.scenario)
+      \-configuration (lib.commands.base,lib.configuration.config)
+      | \-config (lib.commands.base,tests.configuration.config)
+      | \-model 
+      |   \-mcas (tests.configuration.model,lib.mcas.siteinfo)
+      \-main (v8650_setup,tests.main)
+      \-mcas 
+      | \-lb (tests.mcas.lb,lib.mcas.siteinfo)
+      | \-siteinfo (lib.providers.mcas_configurator,tests.mcas.lb,tests.mcas.siteinfo,lib.providers.ip_provider)
+      | \-utils (lib.providers.infra_builder,lib.commands.v8650.installspa,lib.providers.ip_provider,lib.commands.v8650.boot,tests.mcas.utils,lib.providers.mcas_configurator,lib.commands.v8650.finalize)
+      \-providers 
+      | \-infra_builder (lib.commands.base)
+      | \-ip_provider (lib.commands.base,tests.providers.ip_provider)
+      | \-mcas_configurator (lib.commands.base)
+      \-scenario (lib.commands.base,lib.commands.v8650.auto,tests.scenario)
+      \-ssh (lib.virt.clients.vmmhi.client,lib.mcas.utils,tests.ssh)
+      \-virt 
+        \-clients 
+          \-openstack (lib.commands.base,tests.openstack)
+          | \-client (lib.virt.clients.openstack.image,tests.openstack,lib.virt.clients.openstack.compute,lib.virt.clients.openstack,lib.virt.clients.openstack.network)
+          | \-compute (tests.openstack,lib.virt.clients.openstack)
+          | \-image (tests.openstack,lib.virt.clients.openstack)
+          | \-network (tests.openstack,lib.virt.clients.openstack)
+          \-vmmhi 
+            \-client (lib.commands.base,tests.vmmhi)
+    ordereddict (lib.mcas.siteinfo)
+    paramiko (tests.ssh,lib.ssh)
+    tests 
+      \-utils 
+        \-OsApiStub (tests.openstack)
+        \-osdata (tests.utils.OsApiStub)
+    unittest2 (tests.commands,tests.main,tests.configuration.config,tests.mcas.lb,tests.openstack,tests.providers.ip_provider,tests.common,tests.mcas.utils,tests.vmmhi,test,tests.scenario,tests.mcas.siteinfo,tests.ssh,tests.configuration.model)
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |18    |18       |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.247 |0.247    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |62     |62         |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |118    |118        |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |571    |571        |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |32     |32         |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |4933   |78.10 |4933     |=          |
++----------+-------+------+---------+-----------+
+|docstring |922    |14.60 |922      |=          |
++----------+-------+------+---------+-----------+
+|comment   |157    |2.49  |157      |=          |
++----------+-------+------+---------+-----------+
+|empty     |304    |4.81  |304      |=          |
++----------+-------+------+---------+-----------+
+
+
+
