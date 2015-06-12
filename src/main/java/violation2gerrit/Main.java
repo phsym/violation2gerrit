@@ -27,7 +27,7 @@ public class Main {
 		ArgParse argParse = new ArgParse("viloation2gerrit")
 			.description("Report code violation as Gerrit review comments")
 			.defaultHelp()
-			.version("0.0.1-SNAPSHOT")
+			.version("0.1.0")
 			.addDefaultErrorHandler();
 		
 		argParse.label("Options :");

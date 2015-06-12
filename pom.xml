@@ -2,7 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.phsym.violation2gerrit</groupId>
   <artifactId>violation2gerrit</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0</version>
+  <repositories>
+  	<repository>
+	    <id>jitpack.io</id>
+	    <url>https://jitpack.io</url>
+	</repository>
+  </repositories>
   <build>
     <plugins>
       <plugin>
@@ -13,16 +19,6 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-      <!-- <plugin>
-      	<groupId>org.apache.maven.plugins</groupId>
-      	<artifactId>maven-assembly-plugin</artifactId>
-      	<configuration>
-      		<descriptors>
-      			<descriptor>src/assemble/distribution.xml</descriptor>
-      		</descriptors>
-      	</configuration>
-      </plugin> -->
-    
 	    <plugin>
 	        <artifactId>maven-assembly-plugin</artifactId>
 	
@@ -58,9 +54,9 @@
   		<version>0.8.5</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.phsym.jArgParse</groupId>
+  		<groupId>com.github.phsym</groupId>
   		<artifactId>jArgParse</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>0.1.0</version>
   	</dependency>
   </dependencies>
 </project>
