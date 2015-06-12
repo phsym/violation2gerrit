@@ -1,17 +1,17 @@
-package violation2gerrit;
+package com.github.phsym.violation2gerrit;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.phsym.violation2gerrit.reportparser.CheckStyleReportParser;
+import com.github.phsym.violation2gerrit.reportparser.PylintReportParser;
 import com.google.gerrit.extensions.api.GerritApi;
 import com.urswolfer.gerrit.client.rest.GerritAuthData;
 import com.urswolfer.gerrit.client.rest.GerritRestApiFactory;
 
 import phsym.argparse.ArgParse;
 import phsym.argparse.arguments.Type;
-import violation2gerrit.reportparser.CheckStyleReportParser;
-import violation2gerrit.reportparser.PylintReportParser;
 
 public class Main {
 	

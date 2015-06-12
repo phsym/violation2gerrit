@@ -1,4 +1,4 @@
-package violation2gerrit.reportparser;
+package com.github.phsym.violation2gerrit.reportparser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import violation2gerrit.Comment;
+import com.github.phsym.violation2gerrit.Comment;
 
 public class CheckStyleReportParser implements ReportParser {
 

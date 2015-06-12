@@ -30,7 +30,7 @@
 	            <archive>
 	              <manifest>
 	                <addClasspath>true</addClasspath>
-	                <mainClass>violation2gerrit.Main</mainClass>
+	                <mainClass>com.github.phsym.violation2gerrit.Main</mainClass>
 	              </manifest>
 	            </archive>
 	        </configuration>
@@ -56,7 +56,7 @@
   	<dependency>
   		<groupId>com.github.phsym</groupId>
   		<artifactId>jArgParse</artifactId>
-  		<version>0.1.0</version>
+  		<version>0.1.1</version>
   	</dependency>
   </dependencies>
 </project>

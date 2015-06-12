@@ -1,4 +1,4 @@
-package violation2gerrit.reportparser;
+package com.github.phsym.violation2gerrit.reportparser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
-import violation2gerrit.Comment;
+import com.github.phsym.violation2gerrit.Comment;
 
 public interface ReportParser {
 	public List<Comment> parse(InputStream stream) throws ReportParseException;

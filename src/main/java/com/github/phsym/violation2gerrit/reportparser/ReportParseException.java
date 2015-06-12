@@ -1,4 +1,4 @@
-package violation2gerrit.reportparser;
+package com.github.phsym.violation2gerrit.reportparser;
 
 public class ReportParseException extends Exception {
 

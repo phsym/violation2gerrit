@@ -1,4 +1,4 @@
-package violation2gerrit.reportparser;
+package com.github.phsym.violation2gerrit.reportparser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import violation2gerrit.Comment;
+import com.github.phsym.violation2gerrit.Comment;
 
 public class PylintReportParser implements ReportParser {
 	

@@ -1,4 +1,4 @@
-package violation2gerrit;
+package com.github.phsym.violation2gerrit;
 
 import com.google.gerrit.extensions.api.changes.ReviewInput.CommentInput;
 

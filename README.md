@@ -9,7 +9,7 @@
 > Check LICENSE.txt file for more information. <br>
 
 
-**violation2gerrit** is a command line tool for publishing code violations report directly
+**violation2gerrit** is a command line tool for publishing code violation reports directly
 into Gerrit's review inline commnents
 
 ## How to build
