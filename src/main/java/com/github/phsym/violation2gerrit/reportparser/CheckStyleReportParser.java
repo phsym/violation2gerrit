@@ -14,11 +14,25 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.github.phsym.violation2gerrit.Comment;
+import com.github.phsym.violation2gerrit.comments.Comment;
+import com.github.phsym.violation2gerrit.comments.Severity;
 
 public class CheckStyleReportParser implements ReportParser {
 
 	public CheckStyleReportParser() {
+	}
+	
+	public static Severity parseSeverity(String severity) {
+		switch(severity) {
+		case "info": 
+			return Severity.LOW;
+		case "warning":
+			return Severity.WARNING;
+		case "error":
+			return Severity.ERROR;
+		default:
+			return Severity.UNKNOWN;
+		}
 	}
 
 	@Override
@@ -36,13 +50,13 @@ public class CheckStyleReportParser implements ReportParser {
 					Node errorNode = errorNodeList.item(j);
 					if(!"error".equals(errorNode.getNodeName()))
 						continue;
-					String msg = errorNode.getAttributes().getNamedItem("severity").getTextContent() 
-							+ " : " 
-							+ errorNode.getAttributes().getNamedItem("message").getTextContent();
+					String severity = errorNode.getAttributes().getNamedItem("severity").getTextContent();
+					String msg =  severity + " : " + errorNode.getAttributes().getNamedItem("message").getTextContent();
 					Comment com = new Comment(
 							file,
 							errorNode.getAttributes().getNamedItem("line").getTextContent(),
-							msg
+							msg,
+							parseSeverity(severity)
 						);
 					comments.add(com);
 				}

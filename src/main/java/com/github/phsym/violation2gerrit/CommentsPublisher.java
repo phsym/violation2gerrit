@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
+import com.github.phsym.violation2gerrit.comments.Comment;
 import com.google.gerrit.extensions.api.GerritApi;
 import com.google.gerrit.extensions.api.changes.ReviewInput;
 import com.google.gerrit.extensions.api.changes.ReviewInput.CommentInput;
@@ -23,7 +23,8 @@ public class CommentsPublisher {
 	
 	public CommentsPublisher(GerritApi gerrit, String sourceRoot) {
 		this.api = gerrit;
-		this.sourceRoot = Objects.requireNonNull(sourceRoot, "sourceRoot must be non null");
+		if(sourceRoot != null)
+			this.sourceRoot = sourceRoot;
 	}
 	
 	public CommentsPublisher(GerritApi gerrit) {

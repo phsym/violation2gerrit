@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.phsym.violation2gerrit.comments.Comment;
 import com.github.phsym.violation2gerrit.reportparser.CheckStyleReportParser;
 import com.github.phsym.violation2gerrit.reportparser.PylintReportParser;
 import com.google.gerrit.extensions.api.GerritApi;
@@ -21,10 +22,14 @@ public class Main {
 	private static String rootDir;
 	private static List<String> pylintFiles;
 	private static List<String> checkstyleFiles;
+	
+	private static Integer gerritChange = null;
+	private static Integer revId = null;
+	
 	private static boolean debug;
 	
 	public static Map<String, Object> parseArgs(String[] args) {
-		ArgParse argParse = new ArgParse("viloation2gerrit")
+		ArgParse argParse = new ArgParse("violation2gerrit")
 			.description("Report code violation as Gerrit review comments")
 			.defaultHelp()
 			.version("0.1.0")
@@ -59,10 +64,10 @@ public class Main {
 			.setDefault(new ArrayList<>());
 		argParse.add(Type.INT, "-c", "--change-number")
 			.help("Gerrit change number to publish comments to. Default will be taken from GERRIT_CHANGE_NUMBER environment variable")
-			.dest("change-number");
+			.consume((c) -> gerritChange = c);
 		argParse.add(Type.INT, "-r", "--review-id")
 			.help("Gerrit review id (patchset) for the given change. Default will be taken from GERRIT_PATCHSET_NUMBER environment variable")
-			.dest("review-id");
+			.consume((r) -> revId = r);
 		argParse.add(Type.BOOL, "-d", "--debug")
 			.help("Enable debugging")
 			.setDefault(false)
@@ -86,8 +91,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		
-		Map<String, Object> arguments = parseArgs(args);
+		parseArgs(args);
 		
 		List<Comment> comments = new ArrayList<>();
 		GerritApi api = getGerritApi();
@@ -95,18 +99,16 @@ public class Main {
 		PylintReportParser pylint = new PylintReportParser();
 		CheckStyleReportParser checkstyle = new CheckStyleReportParser();
 		
-		Integer gerritChange = (Integer) arguments.get("change-number");
-		Integer revId = (Integer) arguments.get("review-id");
 		if(gerritChange == null)
 			gerritChange = Integer.parseInt(getMandatoryEnv("GERRIT_CHANGE_NUMBER"));
 		if(revId == null)
 			revId = Integer.parseInt(getMandatoryEnv("GERRIT_PATCHSET_NUMBER"));
 		
-		for(Object pylintFile : pylintFiles) {
-			comments.addAll(pylint.parse((String)pylintFile));
+		for(String pylintFile : pylintFiles) {
+			comments.addAll(pylint.parse(pylintFile));
 		}
-		for(Object csFile : checkstyleFiles) {
-			comments.addAll(checkstyle.parse((String)csFile));
+		for(String csFile : checkstyleFiles) {
+			comments.addAll(checkstyle.parse(csFile));
 		}
 		if(debug)
 			System.out.println(comments);

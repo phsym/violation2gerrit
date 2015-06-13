@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.github.phsym.violation2gerrit.Comment;
+import com.github.phsym.violation2gerrit.comments.Comment;
+import com.github.phsym.violation2gerrit.comments.Severity;
 
 public class PylintReportParser implements ReportParser {
 	
@@ -17,7 +18,24 @@ public class PylintReportParser implements ReportParser {
 
 	public PylintReportParser() {
 	}
-
+	
+	public static Severity parseSeverity(String severity) {
+		if(severity.length() == 0)
+			return Severity.UNKNOWN;
+		char c = severity.charAt(0);
+		switch(c) {
+		case 'R':
+		case 'C':
+			return Severity.LOW;
+		case 'W':
+			return Severity.WARNING;
+		case 'E':
+			return Severity.ERROR;
+		default:
+			return Severity.UNKNOWN;
+		}
+	}
+	
 	@Override
 	public List<Comment> parse(InputStream stream) throws ReportParseException {
 		try {
@@ -31,30 +49,13 @@ public class PylintReportParser implements ReportParser {
 					Comment c = new Comment(
 							matcher.group(1),
 							matcher.group(2),
-							matcher.group(3) + " : " + matcher.group(4)
+							matcher.group(3) + " : " + matcher.group(4),
+							parseSeverity(matcher.group(3))
 							);
 					comments.add(c);
 				}
 			}
 			return comments;
-			
-	//		return reader.lines().filter((l) -> pat.matcher(l).matches())
-	//				.map(
-	//					(line) -> {
-	//						Matcher matcher = pat.matcher(line);
-	//						matcher.find();
-	//						return new Comment(
-	//								matcher.group(1),
-	//								matcher.group(2),
-	//								matcher.group(3) + " : " + matcher.group(4)
-	//								);
-	//					}
-	//				)
-	//				.collect(
-	//						() -> new ArrayList<Comment>(),
-	//						(acc, c) -> acc.add(c),
-	//						(l1, l2) -> l1.addAll(l2)
-	//				);
 		} catch(IOException e) {
 			throw new ReportParseException(e);
 		}
