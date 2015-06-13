@@ -1,5 +1,6 @@
 ![License](http://img.shields.io/badge/license-BSD-lightgrey.svg)
 [![Build Status](https://travis-ci.org/phsym/violation2gerrit.svg)](https://travis-ci.org/phsym/violation2gerrit)
+[![Coverage Status](https://coveralls.io/repos/phsym/violation2gerrit/badge.svg?branch=master)](https://coveralls.io/r/phsym/violation2gerrit?branch=master)
 
 # violation2gerrit
 
