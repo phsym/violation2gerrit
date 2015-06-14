@@ -24,7 +24,7 @@ public class PylintReportParser extends ReportParser {
 		switch(c) {
 		case 'R':
 		case 'C':
-			return Severity.LOW;
+			return Severity.INFO;
 		case 'W':
 			return Severity.WARNING;
 		case 'E':

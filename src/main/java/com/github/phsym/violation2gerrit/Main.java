@@ -29,6 +29,7 @@ public class Main {
 	
 	protected static Integer gerritChange = null;
 	protected static Integer revId = null;
+	protected static boolean labelize = false;
 	
 	protected static boolean debug;
 	
@@ -72,6 +73,9 @@ public class Main {
 		argParse.add(Type.INT, "-r", "--review-id")
 			.help("Gerrit review id (patchset) for the given change. Default will be taken from GERRIT_PATCHSET_NUMBER environment variable")
 			.consume((r) -> revId = r);
+		argParse.add(Type.BOOL, "-l", "--lablize")
+			.help("Labelize the review with Code-Review = -1 or -2 if warnings or errors are reported")
+			.consume((l) -> labelize = l);
 		argParse.add(Type.BOOL, "-d", "--debug")
 			.help("Enable debugging")
 			.setDefault(false)
@@ -100,7 +104,7 @@ public class Main {
 			
 			List<Comment> comments = new ArrayList<>();
 			GerritApi api = getGerritApi();
-			CommentsPublisher pub = new CommentsPublisher(api, rootDir);
+			CommentsPublisher pub = new CommentsPublisher(api, labelize, rootDir);
 			PylintReportParser pylint = new PylintReportParser();
 			CheckStyleReportParser checkstyle = new CheckStyleReportParser();
 			

@@ -37,6 +37,6 @@ public class TestPylintParser {
 		assertNotNull(c);
 		assertEquals(c.getLine(), 16);
 		assertEquals(c.getMessage(), "R0904 : Too many public methods (102/100)");
-		assertEquals(c.getSeverity(), Severity.LOW);
+		assertEquals(c.getSeverity(), Severity.INFO);
 	}
 }

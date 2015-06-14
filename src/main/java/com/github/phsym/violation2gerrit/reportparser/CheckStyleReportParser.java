@@ -19,7 +19,7 @@ public class CheckStyleReportParser extends ReportParser {
 	public static Severity parseSeverity(String severity) {
 		switch(severity) {
 		case "info": 
-			return Severity.LOW;
+			return Severity.INFO;
 		case "warning":
 			return Severity.WARNING;
 		case "error":

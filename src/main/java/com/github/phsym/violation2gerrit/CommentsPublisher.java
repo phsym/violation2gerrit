@@ -19,20 +19,22 @@ import com.google.gerrit.extensions.restapi.RestApiException;
 public class CommentsPublisher {
 	
 	private GerritApi api;
+	private boolean labelize;
 	private String sourceRoot = "";
 	
-	public CommentsPublisher(GerritApi gerrit, String sourceRoot) {
+	public CommentsPublisher(GerritApi gerrit, boolean labelize, String sourceRoot) {
 		this.api = gerrit;
+		this.labelize = labelize;
 		if(sourceRoot != null)
 			this.sourceRoot = sourceRoot;
 	}
 	
-	public CommentsPublisher(GerritApi gerrit) {
-		this(gerrit, "");
+	public CommentsPublisher(GerritApi gerrit, boolean labelize) {
+		this(gerrit, labelize, "");
 	}
 	
 	public void publishComments(int changeNum, int review, List<Comment> comments) throws RestApiException {
-		int counter = 0;
+		SeverityCounter counter = new SeverityCounter();
 		ChangeInfo change = api.changes().query(Integer.toString(changeNum)).get().get(0);
 		RevisionApi rev = api.changes().id(change.changeId).revision(review);
 		Set<String> revFiles = rev.files().keySet();
@@ -46,17 +48,31 @@ public class CommentsPublisher {
 				if(cmt.getFile().equals(f) || cmt.getFile().equals(sourceRoot + "/" + f)) {
 					if(!setComments.stream().anyMatch((c) -> (c.line == cmt.getLine()) && (c.message.equals(cmt.getMessage())))) {
 						l.add(cmt.toCommentInput());
-						counter += 1;
+						counter.increment(cmt.getSeverity());
 					}
 				}
 			}
 			commentsInput.put(f, l);
 		}
 		
-		if(counter > 0) {
+		if(counter.getTotal() > 0) {
 			ReviewInput revInput = new ReviewInput();
 			revInput.comments = commentsInput;
-			revInput.message = "Published violation report (found " + counter + ")";
+			revInput.message = "Published violation report " + counter;
+			if(labelize) {
+				switch(counter.highest()) {
+				case ERROR:
+					revInput.message += "\nError(s) found. Code-Review = -2";
+					revInput.label("Code-Review", -2);
+					break;
+				case WARNING:
+					revInput.message += "\nWarning(s) found. Code-Review = -1";
+					revInput.label("Code-Review", -1);
+					break;
+				default:
+					break;
+				}
+			}
 			rev.review(revInput);
 		}
 	}
