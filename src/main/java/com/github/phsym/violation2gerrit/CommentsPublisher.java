@@ -50,14 +50,6 @@ public class CommentsPublisher {
 					}
 				}
 			}
-//			
-//			List<CommentInput> l = comments.stream()
-//					.filter((cm) -> cm.getFile().equals(f))
-//					.collect(
-//						() -> new ArrayList<CommentInput>(),
-//						(acc, cmt) -> acc.add(cmt.toCommentInput()),
-//						(l1, l2) -> l1.addAll(l2)
-//					);
 			commentsInput.put(f, l);
 		}
 		

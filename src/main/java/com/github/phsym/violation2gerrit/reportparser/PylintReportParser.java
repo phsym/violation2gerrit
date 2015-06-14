@@ -4,15 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.github.phsym.violation2gerrit.comments.Comment;
 import com.github.phsym.violation2gerrit.comments.Severity;
 
-public class PylintReportParser implements ReportParser {
+public class PylintReportParser extends ReportParser {
 	
 	private static final Pattern pat = Pattern.compile("(.+):([0-9]+): \\[(.+)\\(.+\\), .*\\] (.*)");
 
@@ -36,26 +34,40 @@ public class PylintReportParser implements ReportParser {
 		}
 	}
 	
+//	public void parse(InputStream input, Consumer<Comment> consumer) throws ReportParseException {
+//		try {
+//			stream(input).forEach(consumer);
+//		} catch(UncheckedIOException e) {
+//			throw new ReportParseException(e);
+//		}
+//	}
+//	
+//	public Stream<Comment> stream(InputStream input) {
+//		return new BufferedReader(new InputStreamReader(input))
+//			.lines()
+//			.map((l) -> pat.matcher(l))
+//			.filter((m) -> m.find())
+//			.map((m) -> new Comment(m.group(1), m.group(2), m.group(3) + " : " + m.group(4), parseSeverity(m.group(3))));
+//	}
+
 	@Override
-	public List<Comment> parse(InputStream stream) throws ReportParseException {
+	public void parse(InputStream stream, List<Comment> comments) throws ReportParseException {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-			List<Comment> comments = new ArrayList<>();
 			
 			String line = null;
 			while((line = reader.readLine()) != null) {
-				Matcher matcher = pat.matcher(line);
-				if(matcher.find()) {
+				Matcher m = pat.matcher(line);
+				if(m.find()) {
 					Comment c = new Comment(
-							matcher.group(1),
-							matcher.group(2),
-							matcher.group(3) + " : " + matcher.group(4),
-							parseSeverity(matcher.group(3))
+							m.group(1),
+							m.group(2),
+							m.group(3) + " : " + m.group(4),
+							parseSeverity(m.group(3))
 							);
 					comments.add(c);
 				}
 			}
-			return comments;
 		} catch(IOException e) {
 			throw new ReportParseException(e);
 		}

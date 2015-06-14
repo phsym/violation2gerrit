@@ -2,23 +2,17 @@ package com.github.phsym.violation2gerrit.reportparser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 import com.github.phsym.violation2gerrit.comments.Comment;
 import com.github.phsym.violation2gerrit.comments.Severity;
 
-public class CheckStyleReportParser implements ReportParser {
-
+public class CheckStyleReportParser extends ReportParser {
+	
 	public CheckStyleReportParser() {
 	}
 	
@@ -34,35 +28,37 @@ public class CheckStyleReportParser implements ReportParser {
 			return Severity.UNKNOWN;
 		}
 	}
-
+	
+//	public Stream<Comment> stream(InputStream input) throws JDOMException, IOException {
+//		Element root = new SAXBuilder().build(stream).getRootElement();
+//		Stream<Comment> stream = root.getChildren("file").stream()
+//								.map(
+//										(e) -> e.getChildren("error").stream().<Comment>map((c) -> new Comment(
+//												e.getAttributeValue("name"),
+//												c.getAttributeValue("line"),
+//												c.getAttributeValue("severity") + " : " + c.getAttributeValue("message"),
+//												parseSeverity(c.getAttributeValue("severity"))
+//												))
+//									)
+//								.reduce((a, b) -> Stream.concat(a, b))
+//								.orElse(Stream.empty());
+//		return stream;
+//	}
+	
 	@Override
-	public List<Comment> parse(InputStream stream) throws ReportParseException {
+	public void parse(InputStream stream, List<Comment> comments) throws ReportParseException {
 		try {
-			List<Comment> comments = new ArrayList<>();
-			Document dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
-			Element root = dom.getDocumentElement();
-			NodeList fileNodeList = root.getElementsByTagName("file");
-			for(int i = 0; i < fileNodeList.getLength(); i++) {
-				Node fileNode = fileNodeList.item(i);
-				String file = fileNode.getAttributes().getNamedItem("name").getTextContent();
-				NodeList errorNodeList = fileNode.getChildNodes();
-				for(int j = 0; j < errorNodeList.getLength(); j++) {
-					Node errorNode = errorNodeList.item(j);
-					if(!"error".equals(errorNode.getNodeName()))
-						continue;
-					String severity = errorNode.getAttributes().getNamedItem("severity").getTextContent();
-					String msg =  severity + " : " + errorNode.getAttributes().getNamedItem("message").getTextContent();
-					Comment com = new Comment(
-							file,
-							errorNode.getAttributes().getNamedItem("line").getTextContent(),
-							msg,
-							parseSeverity(severity)
-						);
+			Element root = new SAXBuilder().build(stream).getRootElement();
+			for(Element file : root.getChildren("file")) {
+				String fileName = file.getAttributeValue("name");
+				for(Element error : file.getChildren("error")) {
+					String severity = error.getAttributeValue("severity");
+					String msg = severity + " : " + error.getAttributeValue("message");
+					Comment com = new Comment(fileName, error.getAttributeValue("line"), msg, parseSeverity(severity));
 					comments.add(com);
 				}
 			}
-			return comments;
-		} catch(IOException | SAXException | ParserConfigurationException e) {
+		} catch(IOException | JDOMException e) {
 			throw new ReportParseException(e);
 		}
 	}

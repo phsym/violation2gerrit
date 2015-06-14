@@ -110,10 +110,10 @@ public class Main {
 				revId = Integer.parseInt(getMandatoryEnv("GERRIT_PATCHSET_NUMBER"));
 			
 			for(String pylintFile : pylintFiles) {
-				comments.addAll(pylint.parse(pylintFile));
+				pylint.parse(pylintFile, comments);
 			}
 			for(String csFile : checkstyleFiles) {
-				comments.addAll(checkstyle.parse(csFile));
+				checkstyle.parse(csFile, comments);
 			}
 			if(debug)
 				System.out.println(comments);
@@ -121,6 +121,7 @@ public class Main {
 			pub.publishComments(gerritChange, revId, comments);
 		} catch(ArgParseException | RestApiException | FileNotFoundException | ReportParseException e) {
 			System.err.println(e.getMessage());
+			System.exit(1);
 		}
 	}
 }
