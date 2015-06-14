@@ -1,5 +1,6 @@
 package com.github.phsym.violation2gerrit;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,28 +8,31 @@ import java.util.Map;
 import com.github.phsym.violation2gerrit.comments.Comment;
 import com.github.phsym.violation2gerrit.reportparser.CheckStyleReportParser;
 import com.github.phsym.violation2gerrit.reportparser.PylintReportParser;
+import com.github.phsym.violation2gerrit.reportparser.ReportParseException;
 import com.google.gerrit.extensions.api.GerritApi;
+import com.google.gerrit.extensions.restapi.RestApiException;
 import com.urswolfer.gerrit.client.rest.GerritAuthData;
 import com.urswolfer.gerrit.client.rest.GerritRestApiFactory;
 
 import phsym.argparse.ArgParse;
 import phsym.argparse.arguments.Type;
+import phsym.argparse.exceptions.ArgParseException;
 
 public class Main {
 	
-	private static String url;
-	private static String user;
-	private static String password;
-	private static String rootDir;
-	private static List<String> pylintFiles;
-	private static List<String> checkstyleFiles;
+	protected static String url;
+	protected static String user;
+	protected static String password;
+	protected static String rootDir;
+	protected static List<String> pylintFiles;
+	protected static List<String> checkstyleFiles;
 	
-	private static Integer gerritChange = null;
-	private static Integer revId = null;
+	protected static Integer gerritChange = null;
+	protected static Integer revId = null;
 	
-	private static boolean debug;
+	protected static boolean debug;
 	
-	public static Map<String, Object> parseArgs(String[] args) {
+	public static Map<String, Object> parseArgs(String[] args) throws ArgParseException {
 		ArgParse argParse = new ArgParse("violation2gerrit")
 			.description("Report code violation as Gerrit review comments")
 			.defaultHelp()
@@ -72,7 +76,7 @@ public class Main {
 			.help("Enable debugging")
 			.setDefault(false)
 			.consume((d) -> debug = d);
-		return argParse.parse(args);
+		return argParse.parseThrow(args);
 	}
 	
 	public static String getMandatoryEnv(String key) {
@@ -90,29 +94,33 @@ public class Main {
 		return fact.create(auth);
 	}
 
-	public static void main(String[] args) throws Exception {
-		parseArgs(args);
-		
-		List<Comment> comments = new ArrayList<>();
-		GerritApi api = getGerritApi();
-		CommentsPublisher pub = new CommentsPublisher(api, rootDir);
-		PylintReportParser pylint = new PylintReportParser();
-		CheckStyleReportParser checkstyle = new CheckStyleReportParser();
-		
-		if(gerritChange == null)
-			gerritChange = Integer.parseInt(getMandatoryEnv("GERRIT_CHANGE_NUMBER"));
-		if(revId == null)
-			revId = Integer.parseInt(getMandatoryEnv("GERRIT_PATCHSET_NUMBER"));
-		
-		for(String pylintFile : pylintFiles) {
-			comments.addAll(pylint.parse(pylintFile));
+	public static void main(String[] args) {
+		try{ 
+			parseArgs(args);
+			
+			List<Comment> comments = new ArrayList<>();
+			GerritApi api = getGerritApi();
+			CommentsPublisher pub = new CommentsPublisher(api, rootDir);
+			PylintReportParser pylint = new PylintReportParser();
+			CheckStyleReportParser checkstyle = new CheckStyleReportParser();
+			
+			if(gerritChange == null)
+				gerritChange = Integer.parseInt(getMandatoryEnv("GERRIT_CHANGE_NUMBER"));
+			if(revId == null)
+				revId = Integer.parseInt(getMandatoryEnv("GERRIT_PATCHSET_NUMBER"));
+			
+			for(String pylintFile : pylintFiles) {
+				comments.addAll(pylint.parse(pylintFile));
+			}
+			for(String csFile : checkstyleFiles) {
+				comments.addAll(checkstyle.parse(csFile));
+			}
+			if(debug)
+				System.out.println(comments);
+			
+			pub.publishComments(gerritChange, revId, comments);
+		} catch(ArgParseException | RestApiException | FileNotFoundException | ReportParseException e) {
+			System.err.println(e.getMessage());
 		}
-		for(String csFile : checkstyleFiles) {
-			comments.addAll(checkstyle.parse(csFile));
-		}
-		if(debug)
-			System.out.println(comments);
-		
-		pub.publishComments(gerritChange, revId, comments);
 	}
 }
