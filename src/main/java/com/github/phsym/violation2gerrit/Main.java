@@ -103,8 +103,7 @@ public class Main {
 			parseArgs(args);
 			
 			List<Comment> comments = new ArrayList<>();
-			GerritApi api = getGerritApi();
-			CommentsPublisher pub = new CommentsPublisher(api, labelize, rootDir);
+			CommentsPublisher pub = new CommentsPublisher(getGerritApi(), labelize, rootDir);
 			PylintReportParser pylint = new PylintReportParser();
 			CheckStyleReportParser checkstyle = new CheckStyleReportParser();
 			

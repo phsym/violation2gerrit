@@ -46,9 +46,9 @@ public class CommentsPublisher {
 			List<CommentInput> l = new ArrayList<>();
 			for(Comment cmt : comments) {
 				if(cmt.getFile().equals(f) || cmt.getFile().equals(sourceRoot + "/" + f)) {
+					counter.increment(cmt.getSeverity());
 					if(!setComments.stream().anyMatch((c) -> (c.line == cmt.getLine()) && (c.message.equals(cmt.getMessage())))) {
 						l.add(cmt.toCommentInput());
-						counter.increment(cmt.getSeverity());
 					}
 				}
 			}
@@ -58,18 +58,20 @@ public class CommentsPublisher {
 		if(counter.getTotal() > 0) {
 			ReviewInput revInput = new ReviewInput();
 			revInput.comments = commentsInput;
-			revInput.message = "Published violation report " + counter;
+			revInput.message = "Published violation report : " + counter;
 			if(labelize) {
 				switch(counter.highest()) {
 				case ERROR:
-					revInput.message += "\nError(s) found. Code-Review = -2";
+					revInput.message += "\n\nCode-Review = -2";
 					revInput.label("Code-Review", -2);
 					break;
 				case WARNING:
-					revInput.message += "\nWarning(s) found. Code-Review = -1";
+					revInput.message += "\n\nCode-Review = -1";
 					revInput.label("Code-Review", -1);
 					break;
 				default:
+					revInput.message += "\n\nCode-Review = 0";
+					revInput.label("Code-Review", 0);
 					break;
 				}
 			}
