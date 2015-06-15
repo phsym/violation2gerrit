@@ -29,22 +29,6 @@ public class CheckStyleReportParser extends ReportParser {
 		}
 	}
 	
-//	public Stream<Comment> stream(InputStream input) throws JDOMException, IOException {
-//		Element root = new SAXBuilder().build(stream).getRootElement();
-//		Stream<Comment> stream = root.getChildren("file").stream()
-//								.map(
-//										(e) -> e.getChildren("error").stream().<Comment>map((c) -> new Comment(
-//												e.getAttributeValue("name"),
-//												c.getAttributeValue("line"),
-//												c.getAttributeValue("severity") + " : " + c.getAttributeValue("message"),
-//												parseSeverity(c.getAttributeValue("severity"))
-//												))
-//									)
-//								.reduce((a, b) -> Stream.concat(a, b))
-//								.orElse(Stream.empty());
-//		return stream;
-//	}
-	
 	@Override
 	public void parse(InputStream stream, List<Comment> comments) throws ReportParseException {
 		try {

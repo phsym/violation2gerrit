@@ -12,7 +12,7 @@ import com.github.phsym.violation2gerrit.comments.Severity;
 
 public class PylintReportParser extends ReportParser {
 	
-	private static final Pattern pat = Pattern.compile("(.+):([0-9]+): \\[(.+)\\(.+\\), .*\\] (.*)");
+	private static final Pattern pat = Pattern.compile("^(.+):([0-9]+): \\[(.+)\\(.+\\), .*\\] (.*)$");
 
 	public PylintReportParser() {
 	}
@@ -34,22 +34,6 @@ public class PylintReportParser extends ReportParser {
 		}
 	}
 	
-//	public void parse(InputStream input, Consumer<Comment> consumer) throws ReportParseException {
-//		try {
-//			stream(input).forEach(consumer);
-//		} catch(UncheckedIOException e) {
-//			throw new ReportParseException(e);
-//		}
-//	}
-//	
-//	public Stream<Comment> stream(InputStream input) {
-//		return new BufferedReader(new InputStreamReader(input))
-//			.lines()
-//			.map((l) -> pat.matcher(l))
-//			.filter((m) -> m.find())
-//			.map((m) -> new Comment(m.group(1), m.group(2), m.group(3) + " : " + m.group(4), parseSeverity(m.group(3))));
-//	}
-
 	@Override
 	public void parse(InputStream stream, List<Comment> comments) throws ReportParseException {
 		try {
