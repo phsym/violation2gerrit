@@ -1,9 +1,11 @@
-package com.github.phsym.violation2gerrit;
+package com.github.phsym.violation2gerrit.reportparser;
 
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,5 +40,21 @@ public class TestPylintParser {
 		assertEquals(c.getLine(), 16);
 		assertEquals(c.getMessage(), "R0904 : Too many public methods (102/100)");
 		assertEquals(c.getSeverity(), Severity.INFO);
+	}
+	
+	@Test
+	public void test_severity() {
+		Map<String, Severity> tests = new HashMap<>();
+		tests.put("", Severity.UNKNOWN);
+		tests.put("C123", Severity.INFO);
+		tests.put("R123", Severity.INFO);
+		tests.put("W123", Severity.WARNING);
+		tests.put("E123", Severity.ERROR);
+		tests.put("123", Severity.UNKNOWN);
+		tests.put("ABC", Severity.UNKNOWN);
+		
+		for(String k : tests.keySet()) {
+			assertEquals(tests.get(k), PylintReportParser.parseSeverity(k));
+		}
 	}
 }
