@@ -4,10 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import com.github.phsym.violation2gerrit.comments.Comment;
+import com.github.phsym.violation2gerrit.comments.CommentList;
 import com.github.phsym.violation2gerrit.comments.Severity;
 
 public class PylintReportParser extends ReportParser {
@@ -35,7 +36,7 @@ public class PylintReportParser extends ReportParser {
 	}
 	
 	@Override
-	public void parse(InputStream stream, List<Comment> comments) throws ReportParseException {
+	public void parse(InputStream stream, CommentList comments) throws ReportParseException {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 			

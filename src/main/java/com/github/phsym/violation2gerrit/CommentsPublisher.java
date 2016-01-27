@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.phsym.violation2gerrit.comments.Comment;
+import com.github.phsym.violation2gerrit.comments.CommentList;
 import com.google.gerrit.extensions.api.GerritApi;
 import com.google.gerrit.extensions.api.changes.ReviewInput;
 import com.google.gerrit.extensions.api.changes.ReviewInput.CommentInput;
@@ -33,7 +34,7 @@ public class CommentsPublisher {
 		this(gerrit, labelize, "");
 	}
 	
-	public void publishComments(int changeNum, int review, List<Comment> comments) throws RestApiException {
+	public void publishComments(int changeNum, int review, CommentList comments) throws RestApiException {
 		SeverityCounter counter = new SeverityCounter();
 		ChangeInfo change = api.changes().query(Integer.toString(changeNum)).get().get(0);
 		RevisionApi rev = api.changes().id(change.changeId).revision(review);

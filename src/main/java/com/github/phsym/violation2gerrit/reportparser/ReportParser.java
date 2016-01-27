@@ -5,22 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.github.phsym.violation2gerrit.comments.Comment;
+import com.github.phsym.violation2gerrit.comments.CommentList;
 
 public abstract class ReportParser {
 	
-	public abstract void parse(InputStream stream, List<Comment> comments) throws ReportParseException;
+	public abstract void parse(InputStream stream, CommentList comments) throws ReportParseException;
 	
-	public List<Comment> parse(InputStream stream) throws ReportParseException {
-		List<Comment> comments = new ArrayList<>();
+	public final CommentList parse(InputStream stream) throws ReportParseException {
+		CommentList comments = new CommentList();
 		parse(stream, comments);
 		return comments;
 	}
 	
-	public void parse(File file, List<Comment> comments) throws ReportParseException, FileNotFoundException {
+	public final void parse(File file, CommentList comments) throws ReportParseException, FileNotFoundException {
 		FileInputStream f = new FileInputStream(file);
 		try {
 			parse(f, comments);
@@ -31,17 +28,17 @@ public abstract class ReportParser {
 		}
 	}
 	
-	public List<Comment> parse(File file) throws ReportParseException, FileNotFoundException {
-		List<Comment> comments = new ArrayList<>();
+	public final CommentList parse(File file) throws ReportParseException, FileNotFoundException {
+		CommentList comments = new CommentList();
 		parse(file, comments);
 		return comments;
 	}
 	
-	public void parse(String file, List<Comment> comments) throws ReportParseException, FileNotFoundException {
+	public final void parse(String file, CommentList comments) throws ReportParseException, FileNotFoundException {
 		parse(new File(file), comments);
 	}
 	
-	public List<Comment> parse(String file) throws ReportParseException, FileNotFoundException {
+	public final CommentList parse(String file) throws ReportParseException, FileNotFoundException {
 		return parse(new File(file));
 	}
 }

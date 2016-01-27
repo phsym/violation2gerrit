@@ -1,11 +1,19 @@
 package com.github.phsym.violation2gerrit;
 
 import java.io.FileNotFoundException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.github.phsym.violation2gerrit.comments.Comment;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.ssl.SSLContextBuilder;
+
+import com.github.phsym.violation2gerrit.comments.CommentList;
 import com.github.phsym.violation2gerrit.reportparser.CheckStyleReportParser;
 import com.github.phsym.violation2gerrit.reportparser.PylintReportParser;
 import com.github.phsym.violation2gerrit.reportparser.ReportParseException;
@@ -13,6 +21,7 @@ import com.google.gerrit.extensions.api.GerritApi;
 import com.google.gerrit.extensions.restapi.RestApiException;
 import com.urswolfer.gerrit.client.rest.GerritAuthData;
 import com.urswolfer.gerrit.client.rest.GerritRestApiFactory;
+import com.urswolfer.gerrit.client.rest.http.HttpClientBuilderExtension;
 
 import phsym.argparse.ArgParse;
 import phsym.argparse.arguments.Type;
@@ -31,6 +40,7 @@ public class Main {
 	protected static Integer revId = null;
 	protected static boolean labelize = false;
 	
+	protected static boolean ignoreCert = false;
 	protected static boolean debug;
 	
 	public static Map<String, Object> parseArgs(String[] args) throws ArgParseException {
@@ -76,6 +86,10 @@ public class Main {
 		argParse.add(Type.BOOL, "-l", "--lablize")
 			.help("Labelize the review with Code-Review = -1 or -2 if warnings or errors are reported")
 			.consume((l) -> labelize = l);
+		argParse.add(Type.BOOL, "-k", "--ignore-cert")
+			.help("Ignore SSL certificate checking on secured connections")
+			.setDefault(false)
+			.consume((k) -> ignoreCert = k);
 		argParse.add(Type.BOOL, "-d", "--debug")
 			.help("Enable debugging")
 			.setDefault(false)
@@ -95,14 +109,32 @@ public class Main {
 	public static GerritApi getGerritApi() {
 		GerritRestApiFactory fact = new GerritRestApiFactory();
 		GerritAuthData.Basic auth = new GerritAuthData.Basic(url, user, password);
-		return fact.create(auth);
+		if(ignoreCert) {
+			HttpClientBuilderExtension ext = new HttpClientBuilderExtension() {
+				@Override
+				public HttpClientBuilder extend(HttpClientBuilder httpClientBuilder, GerritAuthData authData) {
+					SSLContextBuilder ctxBld = new SSLContextBuilder();
+					try {
+						ctxBld.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustSelfSignedStrategy());
+						httpClientBuilder.setSslcontext(ctxBld.build());
+					} catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+						e.printStackTrace();
+					}
+					
+					return httpClientBuilder;
+				}
+			};
+			return fact.create(auth, ext);
+		} else {
+			return fact.create(auth);
+		}
 	}
 
 	public static void main(String[] args) {
 		try{ 
 			parseArgs(args);
 			
-			List<Comment> comments = new ArrayList<>();
+			CommentList comments = new CommentList();
 			CommentsPublisher pub = new CommentsPublisher(getGerritApi(), labelize, rootDir);
 			PylintReportParser pylint = new PylintReportParser();
 			CheckStyleReportParser checkstyle = new CheckStyleReportParser();
@@ -124,6 +156,8 @@ public class Main {
 			pub.publishComments(gerritChange, revId, comments);
 		} catch(ArgParseException | RestApiException | FileNotFoundException | ReportParseException e) {
 			System.err.println(e.getMessage());
+			if(debug)
+				e.printStackTrace();
 			System.exit(1);
 		}
 	}

@@ -3,10 +3,10 @@ package com.github.phsym.violation2gerrit.comments;
 import com.google.gerrit.extensions.api.changes.ReviewInput.CommentInput;
 
 public class Comment {
-	private Severity severity;
-	private String file;
-	private int line;
-	private String message;
+	protected Severity severity;
+	protected String file;
+	protected int line;
+	protected String message;
 	
 	public Comment(String file, int line, String message) {
 		this(file, line, message, Severity.UNKNOWN);
@@ -54,5 +54,27 @@ public class Comment {
 	public String toString() {
 		return "Comment [severity=" + severity + ", file=" + file + ", line="
 				+ line + ", message=" + message + "]";
+	}
+
+	public boolean isSimilar(Comment other) {
+		if (this == other)
+			return true;
+		if (other == null)
+			return false;
+		if (file == null) {
+			if (other.file != null)
+				return false;
+		} else if (!file.equals(other.file))
+			return false;
+		if (line != other.line)
+			return false;
+		if (message == null) {
+			if (other.message != null)
+				return false;
+		} else if (!message.equals(other.message))
+			return false;
+		if (severity != other.severity)
+			return false;
+		return true;
 	}
 }

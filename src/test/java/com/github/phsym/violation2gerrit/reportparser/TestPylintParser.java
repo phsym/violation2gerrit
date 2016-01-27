@@ -4,13 +4,13 @@ import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.phsym.violation2gerrit.comments.Comment;
+import com.github.phsym.violation2gerrit.comments.CommentList;
 import com.github.phsym.violation2gerrit.comments.Severity;
 import com.github.phsym.violation2gerrit.reportparser.PylintReportParser;
 import com.github.phsym.violation2gerrit.reportparser.ReportParseException;
@@ -33,7 +33,7 @@ public class TestPylintParser {
 	
 	@Test
 	public void test_parse() throws FileNotFoundException, ReportParseException {
-		List<Comment> comments = parser.parse("src/test/resources/pylint-report.txt");
+		CommentList comments = parser.parse("src/test/resources/pylint-report.txt");
 		assertEquals(comments.size(), 5);
 		Comment c = comments.stream().filter((com) -> com.getFile().equals("tests/file3.py")).findFirst().orElse(null);
 		assertNotNull(c);

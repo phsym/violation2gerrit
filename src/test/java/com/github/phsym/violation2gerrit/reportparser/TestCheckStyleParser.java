@@ -4,13 +4,13 @@ import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.phsym.violation2gerrit.comments.Comment;
+import com.github.phsym.violation2gerrit.comments.CommentList;
 import com.github.phsym.violation2gerrit.comments.Severity;
 import com.github.phsym.violation2gerrit.reportparser.CheckStyleReportParser;
 import com.github.phsym.violation2gerrit.reportparser.ReportParseException;
@@ -33,7 +33,7 @@ public class TestCheckStyleParser {
 	
 	@Test
 	public void test_parse() throws FileNotFoundException, ReportParseException {
-		List<Comment> comments = parser.parse("src/test/resources/checkstyle-report.xml");
+		CommentList comments = parser.parse("src/test/resources/checkstyle-report.xml");
 		assertEquals(comments.size(), 3);
 		Comment com = comments.get(0);
 		assertEquals(com.getSeverity(), Severity.WARNING);
