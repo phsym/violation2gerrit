@@ -28,6 +28,7 @@ public class PylintReportParser extends ReportParser {
 			return Severity.INFO;
 		case 'W':
 			return Severity.WARNING;
+		case 'F':
 		case 'E':
 			return Severity.ERROR;
 		default:
